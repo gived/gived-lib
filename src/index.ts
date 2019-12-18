@@ -2,7 +2,7 @@ import { h } from "./h";
 
 interface GivedOpts {
     campaignId: string;
-    defaultGiveAmount: number;
+    defaultGiveAmount?: number;
     enableCampaignManager?: boolean;
 }
 
@@ -10,7 +10,7 @@ export default class Gived {
     private campaignManagerEl?: HTMLElement;
     private overlayEl?: HTMLElement;
     private campaignId: string;
-    private defaultGiveAmount: number;
+    private defaultGiveAmount?: number;
     private enableCampaignManager: boolean;
     constructor(opts: GivedOpts) {
         this.campaignId = opts.campaignId; // TODO: use this to fill campaign manager
@@ -45,7 +45,9 @@ export default class Gived {
                 h('a.gived-float-donate', {
                     href: '#',
                     onclick() {
-                        self.showGived(self.defaultGiveAmount, 'Supporter');
+                        if (typeof self.defaultGiveAmount === 'number') {
+                            self.showGived(self.defaultGiveAmount, 'Supporter');
+                        }
                     }
                 }, ['Donate Now']),
             ]),
@@ -64,7 +66,7 @@ export default class Gived {
         } else {
             const overlayEl = h('div.gived-overlay', {
                 style: 'pointer-events: none;opacity: 0;',
-                onclick(){
+                onclick() {
                     self.hideGived();
                 }
             }, [
@@ -110,6 +112,23 @@ export default class Gived {
 
 
 (function () {
-    // Find everything with data-gived-amount and add handlers
+    setTimeout(() => {
+        // Find everything with data-gived-amount and add handlers
+        const campaignIdEl = document.querySelector('[data-gived-campaign-id]');
+        if (campaignIdEl) {
+            const campaignId = (campaignIdEl as HTMLElement).dataset.givedCampaignId!;
+            const gived = new Gived({ campaignId });
+            const buttons = Array.from(document.querySelectorAll(`[data-gived-amount]`)) as HTMLElement[];
+            for (const button of buttons) {
+                const amount = Number(button.dataset.givedAmount);
+                const tier = button.dataset.givedTier;
+                button.onclick = function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    gived.showGived(amount, tier || 'Supporter');
+                };
+            }
+        }
+    });
     // Auto configure campaign manager
 })();
