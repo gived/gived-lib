@@ -6,7 +6,7 @@ interface GivedOpts {
     enableCampaignManager?: boolean;
 }
 
-export class Gived {
+export default class Gived {
     private campaignManagerEl?: HTMLElement;
     private overlayEl?: HTMLElement;
     private campaignId: string;
@@ -104,11 +104,12 @@ export class Gived {
     }
 
     async getUserData() {
-        throw new Error(`NOT IMPLMENTED`);
+        throw new Error(`NOT IMPLEMENTED`);
     }
 }
 
 
 (function () {
     // Find everything with data-gived-amount and add handlers
+    // Auto configure campaign manager
 })();
