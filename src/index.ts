@@ -12,6 +12,7 @@ export default class Gived {
     private campaignId: string;
     private defaultGiveAmount?: number;
     private enableCampaignManager: boolean;
+    public user?: GivedUser;
     constructor(opts: GivedOpts) {
         this.campaignId = opts.campaignId; // TODO: use this to fill campaign manager
         this.defaultGiveAmount = opts.defaultGiveAmount;
@@ -22,6 +23,12 @@ export default class Gived {
         if (this.enableCampaignManager) {
             this.insertCampaignManager();
         }
+
+        window.addEventListener('message', (msg) => {
+            if (msg.data === 'gived-done') {
+                this.hideGived();
+            }
+        }, false);
     }
 
     private insertCSS() {
@@ -103,10 +110,6 @@ export default class Gived {
 
         iframeEl.setAttribute('src', `https://app.gived.org/#/give?campaignId=${this.campaignId}&amount=${amount}&tier=${tier}`);
         overlayEl.classList.add('show');
-    }
-
-    async getUserData() {
-        throw new Error(`NOT IMPLEMENTED`);
     }
 }
 
