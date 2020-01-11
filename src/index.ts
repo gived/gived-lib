@@ -4,6 +4,7 @@ interface GivedOpts {
     campaignId: string;
     defaultGiveAmount?: number;
     enableCampaignManager?: boolean;
+    domain?: string;
 }
 
 export default class Gived {
@@ -12,11 +13,17 @@ export default class Gived {
     private campaignId: string;
     private defaultGiveAmount?: number;
     private enableCampaignManager: boolean;
+    private domain = 'app.gived.org';
+    private protocol = 'https';
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
         this.campaignId = opts.campaignId; // TODO: use this to fill campaign manager
         this.defaultGiveAmount = opts.defaultGiveAmount;
         this.enableCampaignManager = !!opts.enableCampaignManager;
+        if (opts.domain) {
+            this.domain = opts.domain;
+            this.protocol = 'http';
+        }
 
         this.insertCSS();
 
@@ -79,7 +86,7 @@ export default class Gived {
             }, [
                 h('div.gived-overlay-center', {}, [
                     h('iframe', {
-                        src: `https://app.gived.org/#/loading`
+                        src: `${this.protocol}://${self.domain}/#/loading`
                     })
                 ])
             ]);
@@ -95,7 +102,7 @@ export default class Gived {
         const iframeEl = overlayEl.querySelector('iframe')!;
 
         overlayEl.classList.remove('show');
-        iframeEl.setAttribute('src', `https://app.gived.org/#/loading`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#/loading`);
     }
 
     public showCampaignManager() {
@@ -108,7 +115,7 @@ export default class Gived {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
 
-        iframeEl.setAttribute('src', `https://app.gived.org/#/give?campaignId=${this.campaignId}&amount=${amount}&tier=${tier}`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#/give?campaignId=${this.campaignId}&amount=${amount}&tier=${tier}`);
         overlayEl.classList.add('show');
     }
 }
