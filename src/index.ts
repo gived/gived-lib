@@ -41,7 +41,7 @@ export default class Gived {
     private insertCSS() {
         const givedCssLink = document.createElement('link');
         givedCssLink.rel = 'stylesheet';
-        givedCssLink.href = 'https://gived.org/gived.css';
+        givedCssLink.href = 'https://app.gived.org/gived.css';
         document.head.appendChild(givedCssLink);
     }
 
