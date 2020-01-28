@@ -103,6 +103,10 @@ export default class Gived {
 
         overlayEl.classList.remove('show');
         iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#/loading`);
+
+        if(this.onGivedHidden) {
+            this.onGivedHidden();
+        }
     }
 
     public showCampaignManager() {
@@ -111,12 +115,18 @@ export default class Gived {
         }
     }
 
+    private onGivedHidden?: (() => void);
+
     async showGived(amount: number, tier: string) {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
 
         iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#/give?campaignId=${this.campaignId}&amount=${amount}&tier=${tier}`);
         overlayEl.classList.add('show');
+
+        return new Promise((resolve) => {
+            this.onGivedHidden = resolve;
+        });
     }
 }
 
