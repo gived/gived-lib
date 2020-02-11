@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/requirex"></script>
+    <script>
+        System.import('./src/index.ts').then(({ default: Gived }) => {
+            window.Gived = Gived;
+            window.gived = new Gived({
+                protocol:'http',
+                domain:'localhost:5000',
+                campaignId: 'payment',
+                enableCampaignManager: true,
+                defaultGiveAmount: 300,
+            });
+            gived.showCampaignManager();
+        });
+    </script>
+    <!-- <script>
+        var script = document.createElement('script');
+        script.src = './dist/index.js';
+        script = document.head.appendChild(script);
+        script.onload = function () {
+            setTimeout(function () {
+                var gived = new Gived({
+                    campaignId: 'moneypls',
+                    enableCampaignManager: true,
+                    defaultGiveAmount: 300,
+                });
+                gived.showCampaignManager();
+            }, 1500);
+        }
+    </script> -->
+</head>
+
+<body>
+
+</body>
+
+</html>
