@@ -5,6 +5,7 @@ interface GivedOpts {
     defaultGiveAmount?: number;
     enableCampaignManager?: boolean;
     domain?: string;
+    campaignNameOverride?: string;
 }
 
 export default class Gived {
@@ -14,10 +15,12 @@ export default class Gived {
     private enableCampaignManager: boolean;
     private domain = 'app.gived.org';
     private protocol = 'https';
+    private campaignNameOverride?: string;
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
         this.campaignId = opts.campaignId; // TODO: use this to fill campaign manager
         this.enableCampaignManager = !!opts.enableCampaignManager;
+        this.campaignNameOverride = opts.campaignNameOverride;
         if (opts.domain) {
             this.domain = opts.domain;
             this.protocol = 'http';
@@ -41,7 +44,7 @@ export default class Gived {
                         this.insertCampaignManager();
                     }
                 } else if (target === 'give') {
-                    if(action === 'done') {
+                    if (action === 'done') {
                         this.hideGived();
                     }
                 }
@@ -58,7 +61,7 @@ export default class Gived {
 
     private insertCampaignManager() {
         const givedFloat = h('div.gived-float', { style: 'display:none;' }, [
-            h('iframe', { src: `${this.protocol}://${this.domain}/#/campaign/embed/${this.campaignId}` }, [])
+            h('iframe', { src: `${this.protocol}://${this.domain}/#/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}` }, [])
         ]);
 
         this.campaignManagerEl = document.body.appendChild(givedFloat);
