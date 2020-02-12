@@ -40,7 +40,8 @@ export default class Gived {
                     if (action === 'grow') {
                         this.campaignManagerEl?.classList.add('grow');
                     } else if (action === 'done') {
-                        this.closeCampaignManager();
+                        this.campaignManagerEl?.remove();
+                        this.insertCampaignManager();
                     }
                 } else if (target === 'give') {
                     if (action === 'done') {
@@ -58,25 +59,9 @@ export default class Gived {
         document.head.appendChild(givedCssLink);
     }
 
-    private closeCampaignManager() {
-        this.campaignManagerEl?.classList.add('bounce-out');
-        this.campaignManagerEl?.classList.remove('show');
-        setTimeout(() => {
-            this.campaignManagerEl?.remove();
-            this.insertCampaignManager();
-        }, 1000);
-    }
-
     private insertCampaignManager() {
         const givedFloat = h('div.gived-float', { style: 'display:none;' }, [
-            h('div.close', {
-                onclick: () => this.closeCampaignManager()
-            }, [
-                h('img', {
-                    src: `${this.protocol}://${this.domain}/img/keyboard_arrow_down.svg`
-                }, [])
-            ]),
-            h('iframe', { src: `${this.protocol}://${this.domain}/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}` }, [])
+            h('iframe', { src: `${this.protocol}://${this.domain}/#/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}` }, [])
         ]);
 
         this.campaignManagerEl = document.body.appendChild(givedFloat);
