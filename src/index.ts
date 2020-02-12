@@ -76,7 +76,7 @@ export default class Gived {
                     src: `${this.protocol}://${this.domain}/img/keyboard_arrow_down.svg`
                 }, [])
             ]),
-            h('iframe', { src: `${this.protocol}://${this.domain}/#/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}` }, [])
+            h('iframe', { src: `${this.protocol}://${this.domain}/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}` }, [])
         ]);
 
         this.campaignManagerEl = document.body.appendChild(givedFloat);
@@ -112,7 +112,6 @@ export default class Gived {
 
         overlayEl.classList.remove('show');
         iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#loading`);
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#/loading`);
 
         if (this.onGivedHidden) {
             this.onGivedHidden();
@@ -130,7 +129,8 @@ export default class Gived {
     async showGived(amount: number, tier: string) {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#/give?campaignId=${this.campaignId}&amount=${amount}&tier=${tier}`);
+
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#give/?campaignId=${this.campaignId}&amount=${amount}&tierName=${tier}`);
         overlayEl.classList.add('show');
 
         return new Promise((resolve) => {
