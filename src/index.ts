@@ -80,7 +80,7 @@ export default class Gived {
             }, [
                 h('div.gived-overlay-center', {}, [
                     h('iframe', {
-                        src: `${this.protocol}://${self.domain}/loading`
+                        src: `${this.protocol}://${self.domain}/#loading`
                     })
                 ])
             ]);
@@ -96,7 +96,7 @@ export default class Gived {
         const iframeEl = overlayEl.querySelector('iframe')!;
 
         overlayEl.classList.remove('show');
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/loading`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#loading`);
 
         if (this.onGivedHidden) {
             this.onGivedHidden();
