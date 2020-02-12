@@ -95,7 +95,7 @@ export default class Gived {
             }, [
                 h('div.gived-overlay-center', {}, [
                     h('iframe', {
-                        src: `${this.protocol}://${self.domain}/#loading`
+                        src: `${this.protocol}://${self.domain}/loading`
                     })
                 ])
             ]);
@@ -111,7 +111,7 @@ export default class Gived {
         const iframeEl = overlayEl.querySelector('iframe')!;
 
         overlayEl.classList.remove('show');
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#loading`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/loading`);
 
         if (this.onGivedHidden) {
             this.onGivedHidden();
@@ -130,7 +130,7 @@ export default class Gived {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
 
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/#give/?campaignId=${this.campaignId}&amount=${amount}&tierName=${tier}`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/give/${this.campaignId}?amount=${amount}&tierName=${tier}`);
         overlayEl.classList.add('show');
 
         return new Promise((resolve) => {
