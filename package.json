@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rollup -c",
+    "copy-css": "cp src/style.css dist/gived.css",
+    "build": "rollup -c && npm run copy-css",
     "watch": "rollup -cw",
     "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"

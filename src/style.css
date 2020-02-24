@@ -1,0 +1,135 @@
+.gived-float {
+    display: none;
+    position: fixed;
+    transition: 0.3s;
+    bottom: 20px;
+    right: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    z-index: 900000;
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    height: 50%;
+    max-height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
+    font-size: 15px;
+}
+
+.gived-float .close {
+    position: absolute;
+    cursor: pointer;
+    left: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-weight: 600;
+    width: 30px;
+    height: 30px;
+}
+
+.gived-float .close img {
+    height: 100%;
+    opacity: 0.4;
+    transition: 0.3s;
+}
+
+.gived-float .close:hover img {
+    opacity: 1;
+}
+
+.gived-float.grow {
+    height: 100%;
+    max-height: 600px;
+}
+
+@media (max-width:450px) {
+    .gived-float {
+        max-width: 500px;
+        right: 0;
+        bottom: 0;
+    }
+
+    .gived-float.grow {
+        height: 100%;
+        max-height: 9999px;
+    }
+}
+
+.gived-float iframe {
+    border: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.gived-float.show {
+    display: block !important;
+    animation-name: bounceIn;
+    animation-duration: 0.45s;
+}
+
+
+.gived-float.bounce-out {
+    display: block !important;
+    transform: translate3d(0px, 1000px, 0px);
+    opacity: 0;
+}
+
+.gived-float.rotate-out {
+    transform-origin: 100% 100%;
+    transform: rotateZ(180deg);
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translate3d(0px, 3000px, 0px);
+    }
+
+    100% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+}
+
+.gived-overlay {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 900001;
+}
+
+.gived-overlay.show {
+    pointer-events: initial !important;
+    opacity: 1 !important;
+}
+
+.gived-overlay iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    max-width: 375px;
+    max-height: 600px;
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.gived-overlay-center {
+    width: 100%;
+    height: 100%;
+    max-height: 600px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
