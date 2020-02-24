@@ -2,7 +2,7 @@
   "name": "gived-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/gived.js",
   "scripts": {
     "copy-css": "cp src/style.css dist/gived.css",
     "build": "rollup -c && npm run copy-css",
