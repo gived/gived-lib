@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./dist/gived.js" data-gived-campaign-id='azure'></script>
     <!-- <script>
         window.gived = new Gived({
             protocol: 'http',
@@ -15,22 +16,22 @@
         gived.showCampaignManager();
     </script> -->
     <script>
-        var script = document.createElement('script');
-        script.src = './dist/gived.js';
-        script = document.head.appendChild(script);
-        script.onload = function () {
-            setTimeout(function () {
-                var gived = new Gived({
-                    cdnOverride: 'http://localhost:8080/dist',
-                    protocol: 'http',
-                    domain: 'localhost:3000',
-                    campaignId: 'azure',
-                    enableCampaignManager: true,
-                    campaignNameOverride: 'Test Name'
-                });
-                // gived.showCampaignManager();
-            }, 0);
-        }
+        // var script = document.createElement('script');
+        // script.src = './dist/gived.js';
+        // script = document.head.appendChild(script);
+        // script.onload = function () {
+        //     setTimeout(function () {
+        //         var gived = new Gived({
+        //             cdnOverride: 'http://localhost:8080/dist',
+        //             protocol: 'http',
+        //             domain: 'localhost:3000',
+        //             campaignId: 'azure',
+        //             enableCampaignManager: true,
+        //             campaignNameOverride: 'Test Name'
+        //         });
+        //         // gived.showCampaignManager();
+        //     }, 0);
+        // }
     </script>
 </head>
 

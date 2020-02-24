@@ -31,8 +31,8 @@ export default class Gived {
 
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
-        this.campaignId = opts.campaignId; // TODO: use this to fill campaign manager
-        this.enableCampaignManager = !!opts.enableCampaignManager;
+        this.campaignId = opts.campaignId;
+        this.enableCampaignManager = opts.enableCampaignManager ?? true;
         this.campaignNameOverride = opts.campaignNameOverride;
         this.cdn = opts.cdnOverride || this.cdn;
         if (opts.domain) {
