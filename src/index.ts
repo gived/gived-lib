@@ -6,7 +6,15 @@ interface GivedOpts {
     enableCampaignManager?: boolean;
     domain?: string;
     campaignNameOverride?: string;
+    cdnOverride?: string;
 }
+
+const TODAY = new Date();
+TODAY.setHours(0);
+TODAY.setMinutes(0);
+
+const TWO_WEEKS_AGO = new Date();
+TWO_WEEKS_AGO.setDate(TWO_WEEKS_AGO.getDate() - 14);
 
 export default class Gived {
     private campaignManagerEl?: HTMLElement;
@@ -15,15 +23,40 @@ export default class Gived {
     private enableCampaignManager: boolean;
     private domain = 'app.gived.org';
     private protocol = 'https';
+    private cdn = 'https://cdn.gived.org';
     private campaignNameOverride?: string;
+    private visits: number[] = [];
+    private hiddenAt?: number;
+    private gaveAt?: number;
+
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
         this.campaignId = opts.campaignId; // TODO: use this to fill campaign manager
         this.enableCampaignManager = !!opts.enableCampaignManager;
         this.campaignNameOverride = opts.campaignNameOverride;
+        this.cdn = opts.cdnOverride || this.cdn;
         if (opts.domain) {
             this.domain = opts.domain;
             this.protocol = 'http';
+        }
+        try {
+            this.visits = JSON.parse(localStorage.getItem('__gived_visits') || '[]');
+            if (localStorage.hiddenAt) {
+                this.hiddenAt = JSON.parse(localStorage.hiddenAt);
+            }
+            if (localStorage.gaveAt) {
+                this.gaveAt = JSON.parse(localStorage.gaveAt);
+            }
+        } catch (err) {
+            localStorage.removeItem('__gived_visits');
+            console.error(`Failed to get local storage`, err);
+        }
+        this.visits.push(Date.now());
+        this.visits = this.visits.filter(visit => visit > TWO_WEEKS_AGO.valueOf());
+        try {
+            localStorage.setItem('__gived_visits', JSON.stringify(this.visits));
+        } catch (err) {
+            console.error(`Failed to set local storage`, err);
         }
 
         this.insertCSS();
@@ -40,6 +73,7 @@ export default class Gived {
                     if (action === 'grow') {
                         this.campaignManagerEl?.classList.add('grow');
                     } else if (action === 'done') {
+                        localStorage.givenAt = JSON.stringify(new Date());
                         this.closeCampaignManager();
                     }
                 } else if (target === 'give') {
@@ -49,18 +83,34 @@ export default class Gived {
                 }
             }
         }, false);
+
+        const visitsToday = this.visits.filter(visit => visit > TODAY.valueOf());
+        if (
+            this.enableCampaignManager &&
+            visitsToday.length >= 2 &&
+            (!this.hiddenAt || this.hiddenAt < TWO_WEEKS_AGO.valueOf()) &&
+            (!this.gaveAt || this.gaveAt < TWO_WEEKS_AGO.valueOf())
+        ) {
+            console.info(`Will show widget`);
+            setTimeout(() => {
+                this.showCampaignManager();
+            }, 1000 * 5);
+        }
     }
 
     private insertCSS() {
         const givedCssLink = document.createElement('link');
         givedCssLink.rel = 'stylesheet';
-        givedCssLink.href = `${this.protocol}://${this.domain}/gived.css` + '?' + Date.now();
+        givedCssLink.href = `${this.cdn}/gived.css` + '?' + Date.now();
         document.head.appendChild(givedCssLink);
     }
 
     private closeCampaignManager() {
         this.campaignManagerEl?.classList.add('bounce-out');
         this.campaignManagerEl?.classList.remove('show');
+
+        localStorage.setItem('hiddenAt', JSON.stringify(new Date()));
+
         setTimeout(() => {
             this.campaignManagerEl?.remove();
             this.insertCampaignManager();
@@ -73,10 +123,10 @@ export default class Gived {
                 onclick: () => this.closeCampaignManager()
             }, [
                 h('img', {
-                    src: `${this.protocol}://${this.domain}/img/keyboard_arrow_down.svg`
+                    src: `${this.cdn}/keyboard_arrow_down.svg`
                 }, [])
             ]),
-            h('iframe', { src: `${this.protocol}://${this.domain}/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}` }, [])
+            h('iframe', { src: `${this.protocol}://${this.domain}/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}&recentVisits=${this.visits.length}` }, [])
         ]);
 
         this.campaignManagerEl = document.body.appendChild(givedFloat);
@@ -111,6 +161,7 @@ export default class Gived {
         const iframeEl = overlayEl.querySelector('iframe')!;
 
         overlayEl.classList.remove('show');
+
         iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/loading`);
 
         if (this.onGivedHidden) {

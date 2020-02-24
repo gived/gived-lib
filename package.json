@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/gived.js",
   "scripts": {
-    "copy-css": "cp src/style.css dist/gived.css",
-    "build": "rollup -c && npm run copy-css",
+    "copy-static": "cp static/* dist/",
+    "build": "rollup -c && npm run copy-static",
     "watch": "rollup -cw",
     "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"

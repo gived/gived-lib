@@ -4,7 +4,12 @@ import pkg from './package.json'
 
 export default {
     input: 'src/index.ts',
-    output: { file: pkg.main },
+    output: {
+        sourcemap: true,
+        format: 'iife',
+        name: 'Gived',
+        file: pkg.main
+    },
     external: [
         ...Object.keys(pkg.dependencies || {}),
         ...Object.keys(pkg.peerDependencies || {}),
