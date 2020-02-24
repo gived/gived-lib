@@ -87,7 +87,7 @@ export default class Gived {
         const visitsToday = this.visits.filter(visit => visit > TODAY.valueOf());
         if (
             this.enableCampaignManager &&
-            visitsToday.length >= 2 &&
+            visitsToday.length >= 3 &&
             (!this.hiddenAt || this.hiddenAt < TWO_WEEKS_AGO.valueOf()) &&
             (!this.gaveAt || this.gaveAt < TWO_WEEKS_AGO.valueOf())
         ) {
