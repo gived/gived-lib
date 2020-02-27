@@ -1,5 +1,5 @@
 import { h } from "./h";
-
+console.log(`Loading Gived`);
 interface GivedOpts {
     campaignId: string;
     defaultGiveAmount?: number;
@@ -192,23 +192,25 @@ export default class Gived {
 
 
 (function () {
-    setTimeout(() => {
-        // Find everything with data-gived-amount and add handlers
-        const campaignIdEl = document.querySelector('[data-gived-campaign-id]');
-        if (campaignIdEl) {
-            const campaignId = (campaignIdEl as HTMLElement).dataset.givedCampaignId!;
-            const gived = new Gived({ campaignId });
-            const buttons = Array.from(document.querySelectorAll(`[data-gived-amount]`)) as HTMLElement[];
-            for (const button of buttons) {
-                const amount = Number(button.dataset.givedAmount);
-                const tier = button.dataset.givedTier;
-                button.onclick = function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    gived.showGived(amount, tier || 'Supporter');
-                };
+    if (typeof window !== 'undefined') {
+        setTimeout(() => {
+            // Find everything with data-gived-amount and add handlers
+            const campaignIdEl = document.querySelector('[data-gived-campaign-id]');
+            if (campaignIdEl) {
+                const campaignId = (campaignIdEl as HTMLElement).dataset.givedCampaignId!;
+                const gived = new Gived({ campaignId });
+                const buttons = Array.from(document.querySelectorAll(`[data-gived-amount]`)) as HTMLElement[];
+                for (const button of buttons) {
+                    const amount = Number(button.dataset.givedAmount);
+                    const tier = button.dataset.givedTier;
+                    button.onclick = function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        gived.showGived(amount, tier || 'Supporter');
+                    };
+                }
             }
-        }
-    });
-    // Auto configure campaign manager
+        });
+        // Auto configure campaign manager
+    }
 })();
