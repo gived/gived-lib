@@ -169,6 +169,18 @@ export default class Gived {
         }
     }
 
+    public showUrl(url: string) {
+        const overlayEl = this.getOverlayEl();
+        const iframeEl = overlayEl.querySelector('iframe')!;
+
+        iframeEl.setAttribute('src', url);
+        overlayEl.classList.add('show');
+
+        return new Promise((resolve) => {
+            this.onGivedHidden = resolve;
+        });
+    }
+
     public showCampaignManager() {
         if (this.campaignManagerEl) {
             this.campaignManagerEl.classList.add('show');
