@@ -144,7 +144,7 @@ export default class Gived {
                     src: `${this.cdn}/keyboard_arrow_down.svg`
                 }, [])
             ]),
-            h('iframe', { src: `${this.protocol}://${this.domain}/campaign/embed/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}&recentVisits=${this.visits.length}` }, [])
+            h('iframe', { src: `${this.protocol}://${this.domain}/moneypls/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}&recentVisits=${this.visits.length}` }, [])
         ]);
 
         this.campaignManagerEl = document.body.appendChild(givedFloat);
