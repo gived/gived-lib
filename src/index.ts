@@ -61,8 +61,8 @@ export default class Gived {
 
         this.insertCSS();
 
-        if (this.enableCampaignManager) {
-            this.insertCampaignManager();
+        if (window.location.href.includes('showMoneyPls=true')) {
+            this.showCampaignManager();
         }
 
         window.addEventListener('message', (msg) => {
@@ -92,6 +92,7 @@ export default class Gived {
             (!this.gaveAt || this.gaveAt < TWO_WEEKS_AGO.valueOf())
         ) {
             console.info(`Will show widget`);
+            this.insertCampaignManager();
             setTimeout(() => {
                 this.showCampaignManager();
             }, 1000 * 5);
@@ -113,7 +114,8 @@ export default class Gived {
 
         setTimeout(() => {
             this.campaignManagerEl?.remove();
-            this.insertCampaignManager();
+            this.campaignManagerEl = null;
+            // this.insertCampaignManager();
         }, 1000);
     }
 
@@ -183,8 +185,10 @@ export default class Gived {
 
     public showCampaignManager() {
         if (this.campaignManagerEl) {
-            this.campaignManagerEl.classList.add('show');
+        } else {
+            this.insertCampaignManager();
         }
+        this.campaignManagerEl.classList.add('show');
     }
 
     private onGivedHidden?: (() => void);
