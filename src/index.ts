@@ -39,31 +39,8 @@ export default class Gived {
             this.domain = opts.domain;
             this.protocol = 'http';
         }
-        try {
-            this.visits = JSON.parse(localStorage.getItem('__gived_visits') || '[]');
-            if (localStorage.hiddenAt) {
-                this.hiddenAt = JSON.parse(localStorage.hiddenAt);
-            }
-            if (localStorage.gaveAt) {
-                this.gaveAt = JSON.parse(localStorage.gaveAt);
-            }
-        } catch (err) {
-            localStorage.removeItem('__gived_visits');
-            console.error(`Failed to get local storage`, err);
-        }
-        this.visits.push(Date.now());
-        this.visits = this.visits.filter(visit => visit > TWO_WEEKS_AGO.valueOf());
-        try {
-            localStorage.setItem('__gived_visits', JSON.stringify(this.visits));
-        } catch (err) {
-            console.error(`Failed to set local storage`, err);
-        }
 
         this.insertCSS();
-
-        if (window.location.href.includes('showMoneyPls=true')) {
-            this.showCampaignManager();
-        }
 
         window.addEventListener('message', (msg) => {
             const isGived = msg.data.startsWith('gived-');
@@ -84,19 +61,58 @@ export default class Gived {
             }
         }, false);
 
-        const visitsToday = this.visits.filter(visit => visit > TODAY.valueOf());
-        if (
-            this.enableCampaignManager &&
-            visitsToday.length >= 3 &&
-            (!this.hiddenAt || this.hiddenAt < TWO_WEEKS_AGO.valueOf()) &&
-            (!this.gaveAt || this.gaveAt < TWO_WEEKS_AGO.valueOf())
-        ) {
-            console.info(`Will show widget`);
-            this.insertCampaignManager();
-            setTimeout(() => {
-                this.showCampaignManager();
-            }, 1000 * 5);
+        this.initCampaignManager();
+
+    }
+
+    private async initCampaignManager() {
+        if (window.location.href.includes('showMoneyPls=true')) {
+            this.showCampaignManager();
+        } else {
+            try {
+                this.visits = JSON.parse(localStorage.getItem('__gived_visits') || '[]');
+                if (localStorage.hiddenAt) {
+                    this.hiddenAt = JSON.parse(localStorage.hiddenAt);
+                }
+                if (localStorage.gaveAt) {
+                    this.gaveAt = JSON.parse(localStorage.gaveAt);
+                }
+            } catch (err) {
+                localStorage.removeItem('__gived_visits');
+                console.error(`Failed to get local storage`, err);
+            }
+            this.visits.push(Date.now());
+            this.visits = this.visits.filter(visit => visit > TWO_WEEKS_AGO.valueOf());
+            try {
+                localStorage.setItem('__gived_visits', JSON.stringify(this.visits));
+            } catch (err) {
+                console.error(`Failed to set local storage`, err);
+            }
+
+            const visitsToday = this.visits.filter(visit => visit > TODAY.valueOf());
+            if (
+                this.enableCampaignManager &&
+                visitsToday.length >= 3 &&
+                (!this.hiddenAt || this.hiddenAt < TWO_WEEKS_AGO.valueOf()) &&
+                (!this.gaveAt || this.gaveAt < TWO_WEEKS_AGO.valueOf())
+            ) {
+                const { campaign } = await this.getCampaignData();
+                if (campaign.moneyPlsEnabled) {
+                    console.info(`Will show MoneyPls`);
+                    this.insertCampaignManager();
+                    setTimeout(() => {
+                        this.showCampaignManager();
+                    }, 1000 * 5);
+                } else {
+                    console.info(`MoneyPls is not published. Enable in dashboard`);
+                }
+            }
         }
+    }
+
+    private getCampaignData() {
+        return fetch(`https://api.gived.org/campaign/${this.campaignId}.json`).then(r => r.json());
+        // return fetch(`http://localhost:12180/campaign/${this.campaignId}.json`).then(r => r.json());
     }
 
     private insertCSS() {
