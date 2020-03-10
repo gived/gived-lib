@@ -209,11 +209,11 @@ export default class Gived {
 
     private onGivedHidden?: (() => void);
 
-    async showGived(amount: number, tier: string) {
+    async showGived(amount: number, tier: string, recurring = true) {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
 
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/give/${this.campaignId}?amount=${amount}&tierName=${tier}`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/give/${this.campaignId}?amount=${amount}&tierName=${tier}&recurring=${recurring}`);
         overlayEl.classList.add('show');
 
         return new Promise((resolve) => {
@@ -233,12 +233,13 @@ export default class Gived {
                 const gived = new Gived({ campaignId });
                 const buttons = Array.from(document.querySelectorAll(`[data-gived-amount]`)) as HTMLElement[];
                 for (const button of buttons) {
+                    const isRecurring = button.dataset.givedRecurring!;
                     const amount = Number(button.dataset.givedAmount);
                     const tier = button.dataset.givedTier;
                     button.onclick = function (ev) {
                         ev.preventDefault();
                         ev.stopPropagation();
-                        gived.showGived(amount, tier || 'Supporter');
+                        gived.showGived(amount, tier || 'Supporter', isRecurring !== 'false');
                     };
                 }
             }
