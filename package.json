@@ -2,7 +2,7 @@
   "name": "gived-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/gived.js",
+  "main": "dist/lib.js",
   "scripts": {
     "copy-static": "cp static/* dist/",
     "build": "rollup -c && npm run copy-static",
@@ -13,10 +13,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/jwt-decode": "^2.2.1",
+    "jwt-decode": "^2.2.0",
     "rollup": "^1.31.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript2": "^0.26.0",
-    "typescript": "^3.7.3"
+    "typescript": "^3.7.3",
+    "wretch": "^1.7.1"
   }
 }

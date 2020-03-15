@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./dist/gived.js" data-gived-campaign-id='tcp'></script>
+    <script src="./dist/gived.js" data-gived-campaign-id='test'></script>
     <!-- <script>
         window.gived = new Gived({
             protocol: 'http',
@@ -36,7 +36,42 @@
 </head>
 
 <body>
-    <button data-gived-amount="500" data-gived-tier="Post-Modern Fraud" data-gived-recurring='false'>of course i am a post-modern fraud</button>
+    <button data-gived-amount="500" data-gived-tier="Post-Modern Fraud" data-gived-recurring='false'>of course i am a
+        post-modern fraud</button>
+    <button class='login-btn'>Login</button>
+    <button class='refresh-btn'>Refresh</button>
+    <button class='update-btn'>Update</button>
+    <button class='sub-btn'>sub</button>
+    <button class='pay-btn'>pay</button>
 </body>
+
+<script>
+    const gived = new Gived({
+        campaignId: 'asdfasdfasdf',
+        domain: 'localhost:3000',
+        api: 'http://localhost:12180'
+    });
+    const loginBtn = document.querySelector('.login-btn');
+    loginBtn.onclick = function () {
+        gived.login();
+    }
+    const refreshBtn = document.querySelector('.refresh-btn');
+    refreshBtn.onclick = async function () {
+        console.log(await gived.getUser(true));
+    }
+    const updateDataBtn = document.querySelector('.update-btn');
+    updateDataBtn.onclick = async function () {
+        const data = await gived.getData(true);
+        console.log(await gived.setData({ ...data, number: (data.number || 0) + 1 }));
+    }
+    const subButton = document.querySelector('.sub-btn');
+    subButton.onclick = async function () {
+        await gived.showGived(500, 'Subscriber', true);
+    }
+    const payButton = document.querySelector('.pay-btn');
+    payButton.onclick = async function () {
+        await gived.showGived(500, 'Purchaser', false);
+    }
+</script>
 
 </html>
