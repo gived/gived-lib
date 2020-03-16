@@ -209,7 +209,7 @@ export default class Gived {
             });
         });
         localStorage.__gived_jwt = scopeToken;
-        return jwtDecode(scopeToken);
+        return await this.getUser(true);
     }
 
     public async getUser(invalidateCache = false) {
