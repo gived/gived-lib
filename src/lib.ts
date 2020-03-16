@@ -52,19 +52,21 @@ export default class Gived {
         this.insertCSS();
 
         window.addEventListener('message', (msg) => {
-            const isGived = msg.data.startsWith('gived-');
-            if (isGived) {
-                const [_, action, target] = msg.data.split('-');
-                if (target === 'campaign') {
-                    if (action === 'grow') {
-                        this.campaignManagerEl?.classList.add('grow');
-                    } else if (action === 'done') {
-                        localStorage.givenAt = JSON.stringify(new Date());
-                        this.closeCampaignManager();
-                    }
-                } else if (target === 'give') {
-                    if (action === 'done') {
-                        this.hideGived();
+            if (msg.data && msg.data.startsWith) {
+                const isGived = msg.data.startsWith('gived-');
+                if (isGived) {
+                    const [_, action, target] = msg.data.split('-');
+                    if (target === 'campaign') {
+                        if (action === 'grow') {
+                            this.campaignManagerEl?.classList.add('grow');
+                        } else if (action === 'done') {
+                            localStorage.givenAt = JSON.stringify(new Date());
+                            this.closeCampaignManager();
+                        }
+                    } else if (target === 'give') {
+                        if (action === 'done') {
+                            this.hideGived();
+                        }
                     }
                 }
             }
