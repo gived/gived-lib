@@ -158,7 +158,7 @@ export default class Gived {
             h('iframe', { src: `${this.protocol}://${this.domain}/moneypls/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}&recentVisits=${this.visits.length}` }, [])
         ]);
 
-        this.campaignManagerEl = document.body.appendChild(givedFloat);
+        this.campaignManagerEl = (document.body || document.querySelector('html')).appendChild(givedFloat);
     }
 
     private getOverlayEl() {
@@ -179,7 +179,7 @@ export default class Gived {
                 ])
             ]);
 
-            this.overlayEl = document.body.appendChild(overlayEl);
+            this.overlayEl = (document.body || document.querySelector('html')).appendChild(overlayEl);
 
             return this.overlayEl;
         }
