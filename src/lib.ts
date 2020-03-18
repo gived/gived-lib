@@ -10,6 +10,7 @@ interface GivedOpts {
     campaignNameOverride?: string;
     cdn?: string;
     api?: string;
+    targetEl?: HTMLElement;
 }
 
 const TODAY = new Date();
@@ -33,6 +34,7 @@ export default class Gived {
     private hiddenAt?: number;
     private gaveAt?: number;
     private apiWretch: any;
+    private insertTargetEl: Element;
 
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
@@ -47,6 +49,13 @@ export default class Gived {
         if (opts.domain) {
             this.domain = opts.domain;
             this.protocol = 'http';
+        }
+        if (opts.targetEl) {
+            this.insertTargetEl = opts.targetEl;
+        } else if (document.body && document.body.nodeName === 'BODY') {
+            this.insertTargetEl = document.body;
+        } else {
+            this.insertTargetEl = document.querySelector('html');
         }
 
         this.insertCSS();
@@ -158,7 +167,7 @@ export default class Gived {
             h('iframe', { src: `${this.protocol}://${this.domain}/moneypls/${this.campaignId}?campaignNameOverride=${this.campaignNameOverride || ''}&recentVisits=${this.visits.length}` }, [])
         ]);
 
-        this.campaignManagerEl = (document.body || document.querySelector('html')).appendChild(givedFloat);
+        this.campaignManagerEl = this.insertTargetEl.appendChild(givedFloat);
     }
 
     private getOverlayEl() {
@@ -179,7 +188,7 @@ export default class Gived {
                 ])
             ]);
 
-            this.overlayEl = (document.body || document.querySelector('html')).appendChild(overlayEl);
+            this.overlayEl = this.insertTargetEl.appendChild(overlayEl);
 
             return this.overlayEl;
         }
