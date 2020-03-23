@@ -88,7 +88,7 @@ export default class Gived {
     private async initCampaignManager() {
         if (window.location.href.includes('showMoneyPls=true')) {
             this.showCampaignManager();
-        } else {
+        } else if (this.enableCampaignManager) {
             try {
                 this.visits = JSON.parse(localStorage.getItem('__gived_visits') || '[]');
                 if (localStorage.hiddenAt) {

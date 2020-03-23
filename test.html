@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./dist/gived.js" data-gived-campaign-id='tcp'></script>
+    <!-- <script src="./dist/gived.js" data-gived-campaign-id='tcp'></script> -->
+    <script src="./dist/gived.js"></script>
     <!-- <script>
         window.gived = new Gived({
             protocol: 'http',
@@ -49,7 +50,8 @@
     const gived = new Gived({
         campaignId: 'test',
         domain: 'localhost:3000',
-        api: 'http://localhost:12180'
+        api: 'http://localhost:12180',
+        cdn: 'http://localhost:8081/dist',
     });
     const loginBtn = document.querySelector('.login-btn');
     loginBtn.onclick = function () {
