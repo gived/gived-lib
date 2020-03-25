@@ -39,7 +39,7 @@ export default class Gived {
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
         this.campaignId = opts.campaignId;
-        this.enableCampaignManager = opts.enableCampaignManager ?? true;
+        this.enableCampaignManager = opts.enableCampaignManager ?? false;
         this.campaignNameOverride = opts.campaignNameOverride;
         this.cdn = opts.cdn || this.cdn;
         this.api = opts.api || this.api;
@@ -217,7 +217,9 @@ export default class Gived {
                 }
             });
         });
-        localStorage.__gived_jwt = scopeToken;
+        if (scopeToken) {
+            localStorage.__gived_jwt = scopeToken;
+        }
         return await this.getUser(true);
     }
 
