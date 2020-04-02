@@ -1,5 +1,5 @@
 {
-  "name": "gived-lib",
+  "name": "@gived/gived-lib",
   "version": "1.0.0",
   "description": "",
   "main": "dist/lib.js",
