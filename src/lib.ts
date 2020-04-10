@@ -170,28 +170,30 @@ export default class Gived {
         this.campaignManagerEl = this.insertTargetEl.appendChild(givedFloat);
     }
 
-    private getOverlayEl() {
+    private getOverlayEl(dismissable = true) {
         const self = this;
         if (this.overlayEl) {
-            return this.overlayEl
-        } else {
-            const overlayEl = h('div.gived-overlay', {
-                style: 'pointer-events: none;opacity: 0;',
-                onclick() {
+            this.insertTargetEl.removeChild(this.overlayEl);
+            delete this.overlayEl;
+        }
+        const overlayEl = h('div.gived-overlay', {
+            style: 'pointer-events: none;opacity: 0;',
+            onclick() {
+                if (dismissable) {
                     self.hideGived();
                 }
-            }, [
-                h('div.gived-overlay-center', {}, [
-                    h('iframe', {
-                        src: `${this.protocol}://${self.domain}/loading`
-                    })
-                ])
-            ]);
+            }
+        }, [
+            h('div.gived-overlay-center', {}, [
+                h('iframe', {
+                    src: `${this.protocol}://${self.domain}/loading`
+                })
+            ])
+        ]);
 
-            this.overlayEl = this.insertTargetEl.appendChild(overlayEl);
+        this.overlayEl = this.insertTargetEl.appendChild(overlayEl);
 
-            return this.overlayEl;
-        }
+        return this.overlayEl;
     }
 
     public hideGived() {
@@ -207,9 +209,9 @@ export default class Gived {
         }
     }
 
-    public async login() {
+    public async login(dismissable = true) {
         const { campaign } = await this.getCampaignData();
-        this.showUrl(`${this.protocol}://${this.domain}/signup/loginpls?scope=${this.campaignId}&scopeName=${campaign.name}`);
+        this.showUrl(`${this.protocol}://${this.domain}/signup/loginpls?scope=${this.campaignId}&scopeName=${campaign.name}`, dismissable);
         const scopeToken = await new Promise<string>((resolve, reject) => {
             window.addEventListener('message', (msg) => {
                 if (msg.data?.type === 'gived-loginpls-token') {
@@ -248,8 +250,8 @@ export default class Gived {
         return profile.data;
     }
 
-    public showUrl(url: string) {
-        const overlayEl = this.getOverlayEl();
+    public showUrl(url: string, dismissable = true) {
+        const overlayEl = this.getOverlayEl(dismissable);
         const iframeEl = overlayEl.querySelector('iframe')!;
 
         iframeEl.setAttribute('src', url);
