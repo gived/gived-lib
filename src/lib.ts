@@ -2,6 +2,23 @@ import { h } from "./h";
 import jwtDecode from 'jwt-decode';
 import wretch from 'wretch';
 
+const lsShim: any = {};
+export function getLocalStorage(key: string, fallback: any = null) {
+    try {
+        return localStorage[key];
+    } catch (err) {
+        return lsShim[key] || fallback;
+    }
+}
+
+export function setLocalStorage(key: string, value: any) {
+    try {
+        localStorage[key] = value;
+    } catch (err) {
+        lsShim[key] = value;
+    }
+}
+
 interface GivedOpts {
     campaignId: string;
     defaultGiveAmount?: number;
@@ -44,7 +61,7 @@ export default class Gived {
         this.cdn = opts.cdn || this.cdn;
         this.api = opts.api || this.api;
         this.apiWretch = function wretchWrapper() {
-            return wretch().url(this.api).auth(`Bearer ${localStorage.__gived_jwt}`);
+            return wretch().url(this.api).auth(`Bearer ${getLocalStorage('__gived_jwt')}`);
         }
         if (opts.domain) {
             this.domain = opts.domain;
@@ -69,7 +86,7 @@ export default class Gived {
                         if (action === 'grow') {
                             this.campaignManagerEl?.classList.add('grow');
                         } else if (action === 'done') {
-                            localStorage.givenAt = JSON.stringify(new Date());
+                            setLocalStorage('givenAt', JSON.stringify(new Date()));
                             this.closeCampaignManager();
                         }
                     } else if (target === 'give') {
@@ -90,21 +107,21 @@ export default class Gived {
             this.showCampaignManager();
         } else if (this.enableCampaignManager) {
             try {
-                this.visits = JSON.parse(localStorage.getItem('__gived_visits') || '[]');
-                if (localStorage.hiddenAt) {
-                    this.hiddenAt = JSON.parse(localStorage.hiddenAt);
+                this.visits = JSON.parse(getLocalStorage('__gived_visits') || '[]');
+                if (getLocalStorage('hiddenAt')) {
+                    this.hiddenAt = JSON.parse(getLocalStorage('hiddenAt'));
                 }
-                if (localStorage.gaveAt) {
-                    this.gaveAt = JSON.parse(localStorage.gaveAt);
+                if (getLocalStorage('gaveAt')) {
+                    this.gaveAt = JSON.parse(getLocalStorage('gaveAt'));
                 }
             } catch (err) {
-                localStorage.removeItem('__gived_visits');
+                setLocalStorage('__gived_visits', null);
                 console.error(`Failed to get local storage`, err);
             }
             this.visits.push(Date.now());
             this.visits = this.visits.filter(visit => visit > TWO_WEEKS_AGO.valueOf());
             try {
-                localStorage.setItem('__gived_visits', JSON.stringify(this.visits));
+                setLocalStorage('__gived_visits', JSON.stringify(this.visits));
             } catch (err) {
                 console.error(`Failed to set local storage`, err);
             }
@@ -146,7 +163,7 @@ export default class Gived {
         this.campaignManagerEl?.classList.add('bounce-out');
         this.campaignManagerEl?.classList.remove('show');
 
-        localStorage.setItem('hiddenAt', JSON.stringify(new Date()));
+        setLocalStorage('hiddenAt', JSON.stringify(new Date()));
 
         setTimeout(() => {
             this.campaignManagerEl?.remove();
@@ -220,19 +237,19 @@ export default class Gived {
             });
         });
         if (scopeToken) {
-            localStorage.__gived_jwt = scopeToken;
+            setLocalStorage('__gived_jwt', scopeToken);
         }
         return await this.getUser(true);
     }
 
     public async getUser(invalidateCache = false) {
-        if (localStorage.__gived_jwt) {
+        if (getLocalStorage('__gived_jwt')) {
             if (invalidateCache) {
                 const profile = await this.apiWretch().url(`/loginpls/user`).get().json();
-                localStorage.__gived_profile = JSON.stringify(profile);
+                setLocalStorage('__gived_profile', JSON.stringify(profile));
                 return profile;
             } else {
-                return JSON.parse(localStorage.__gived_profile);
+                return JSON.parse(getLocalStorage('__gived_profile'));
             }
         } else {
             return null;
@@ -246,7 +263,7 @@ export default class Gived {
 
     public async setData(newData: any) {
         const profile = await this.apiWretch().url(`/loginpls/data`).post(newData).json();
-        localStorage.__gived_profile = JSON.stringify(profile);
+        setLocalStorage('__gived_profile', JSON.stringify(profile));
         return profile.data;
     }
 
