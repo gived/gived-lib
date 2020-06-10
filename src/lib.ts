@@ -147,9 +147,8 @@ export default class Gived {
         }
     }
 
-    private getCampaignData() {
+    public getCampaignData() {
         return fetch(`${this.api}/campaign/${this.campaignId}.json`).then(r => r.json());
-        // return fetch(`http://localhost:12180/campaign/${this.campaignId}.json`).then(r => r.json());
     }
 
     private insertCSS() {

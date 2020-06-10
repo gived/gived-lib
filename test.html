@@ -53,9 +53,10 @@
         api: 'http://localhost:12180',
         cdn: 'http://localhost:8080/dist',
     });
+    gived.getCampaignData().then(d => console.log('Campaign Data', d));
     const loginBtn = document.querySelector('.login-btn');
-    loginBtn.onclick = function () {
-        gived.login();
+    loginBtn.onclick = async function () {
+        const user = await gived.login();
     }
     const refreshBtn = document.querySelector('.refresh-btn');
     refreshBtn.onclick = async function () {

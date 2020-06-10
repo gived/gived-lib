@@ -8,7 +8,7 @@ import Gived from './lib';
             const campaignIdEl = document.querySelector('[data-gived-campaign-id]');
             if (campaignIdEl) {
                 const campaignId = (campaignIdEl as HTMLElement).dataset.givedCampaignId!;
-                const gived = new Gived({ campaignId, enableCampaignManager: true });
+                const gived = (window as any).gived = new Gived({ campaignId, enableCampaignManager: true });
                 const buttons = Array.from(document.querySelectorAll(`[data-gived-amount]`)) as HTMLElement[];
                 for (const button of buttons) {
                     const isRecurring = button.dataset.givedRecurring!;
