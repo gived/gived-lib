@@ -288,11 +288,12 @@ export default class Gived {
 
     private onGivedHidden?: (() => void);
 
-    async showGived(amount: number, tier: string, recurring = true) {
+    async showGived(amount: number, tier: string, recurring = true, meta?: any) {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
+        const metaStr = meta ? encodeURIComponent(JSON.stringify(meta)) : null;
 
-        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/give/${this.campaignId}?amount=${amount}&tierName=${tier}&recurring=${recurring}`);
+        iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/give/${this.campaignId}?amount=${amount}&tierName=${tier}&recurring=${recurring}${metaStr ? '&meta=' + metaStr : ''}`);
         overlayEl.classList.add('show');
 
         return new Promise((resolve) => {
