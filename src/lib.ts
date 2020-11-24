@@ -91,7 +91,7 @@ export default class Gived {
                         }
                     } else if (target === 'give') {
                         if (action === 'done') {
-                            this.hideGived();
+                            this.hideGived(true);
                         }
                     }
                 }
@@ -212,7 +212,7 @@ export default class Gived {
         return this.overlayEl;
     }
 
-    public hideGived() {
+    public hideGived(success = false) {
         const overlayEl = this.getOverlayEl();
         const iframeEl = overlayEl.querySelector('iframe')!;
 
@@ -221,7 +221,7 @@ export default class Gived {
         iframeEl.setAttribute('src', `${this.protocol}://${this.domain}/loading`);
 
         if (this.onGivedHidden) {
-            this.onGivedHidden();
+            this.onGivedHidden(success);
         }
     }
 
@@ -286,7 +286,7 @@ export default class Gived {
         this.campaignManagerEl.classList.add('show');
     }
 
-    private onGivedHidden?: (() => void);
+    private onGivedHidden?: ((complete: boolean) => void);
 
     async showGived(amount: number, tier: string, recurring = true, meta?: any) {
         const overlayEl = this.getOverlayEl();
