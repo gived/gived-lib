@@ -52,6 +52,7 @@ export default class Gived {
     private gaveAt?: number;
     private apiWretch: any;
     private insertTargetEl: Element;
+    private didSucceed: boolean;
 
     public user?: GivedUser;
     constructor(opts: GivedOpts) {
@@ -90,6 +91,9 @@ export default class Gived {
                             this.closeCampaignManager();
                         }
                     } else if (target === 'give') {
+                        if (action === 'success') {
+                            this.didSucceed = true;
+                        }
                         if (action === 'done') {
                             this.hideGived(true);
                         }
@@ -196,7 +200,7 @@ export default class Gived {
             style: 'pointer-events: none;opacity: 0;',
             onclick() {
                 if (dismissable) {
-                    self.hideGived();
+                    self.hideGived(self.didSucceed);
                 }
             }
         }, [
